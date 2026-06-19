@@ -1,11 +1,6 @@
-
-import { useState } from "react";
-import NovelCard from "../components/novel/NovelCard";
-
 export default function Rankings() {
   const [activeTab, setActiveTab] = useState("trending");
 
-  // Temporary Mock Data
   const novels = [
     {
       id: 1,
@@ -47,9 +42,7 @@ export default function Rankings() {
             Discover the most popular stories on Rift Phrase.
           </p>
 
-          {/* Tabs */}
           <div className="flex flex-wrap gap-4 mt-8">
-
             {[
               "trending",
               "top-rated",
@@ -67,10 +60,9 @@ export default function Rankings() {
               >
                 {tab
                   .replace("-", " ")
-                  .replace(/\b\w/g, c => c.toUpperCase())}
+                  .replace(/\b\w/g, (c) => c.toUpperCase())}
               </button>
             ))}
-
           </div>
 
         </div>
@@ -96,4 +88,3 @@ export default function Rankings() {
     </div>
   );
 }
-```
