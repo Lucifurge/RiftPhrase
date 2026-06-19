@@ -1,19 +1,22 @@
 import { supabase } from "../lib/supabase";
 
 // ==========================================
-// ADD NOVEL TO LIBRARY
+// CREATE COMMENT
 // ==========================================
 
-export async function addToLibrary(
+export async function createComment(
   userId,
-  novelId,
-  status = "reading"
+  chapterId,
+  content,
+  parentId = null
 ) {
   const { data, error } = await supabase
-    .from("bookmarks")
+    .from("comments")
     .insert({
       user_id: userId,
-      novel_id: novelId
+      chapter_id: chapterId,
+      parent_id: parentId,
+      content
     })
     .select()
     .single();
@@ -24,85 +27,26 @@ export async function addToLibrary(
 }
 
 // ==========================================
-// REMOVE FROM LIBRARY
+// GET CHAPTER COMMENTS
 // ==========================================
 
-export async function removeFromLibrary(
-  userId,
-  novelId
-) {
-  const { error } = await supabase
-    .from("bookmarks")
-    .delete()
-    .eq("user_id", userId)
-    .eq("novel_id", novelId);
-
-  if (error) throw error;
-}
-
-// ==========================================
-// GET USER LIBRARY
-// ==========================================
-
-export async function getUserLibrary(
-  userId
-) {
-  const { data, error } = await supabase
-    .from("bookmarks")
-    .select(`
-      *,
-      novels(
-        *
-      )
-    `)
-    .eq("user_id", userId);
-
-  if (error) throw error;
-
-  return data;
-}
-
-// ==========================================
-// SAVE READING HISTORY
-// ==========================================
-
-export async function saveReadingHistory(
-  userId,
-  novelId,
+export async function getChapterComments(
   chapterId
 ) {
   const { data, error } = await supabase
-    .from("reading_history")
-    .upsert({
-      user_id: userId,
-      novel_id: novelId,
-      chapter_id: chapterId,
-      last_read_at: new Date()
-    })
-    .select()
-    .single();
-
-  if (error) throw error;
-
-  return data;
-}
-
-// ==========================================
-// GET CONTINUE READING LIST
-// ==========================================
-
-export async function getContinueReading(
-  userId
-) {
-  const { data, error } = await supabase
-    .from("reading_history")
+    .from("comments")
     .select(`
       *,
-      novels(*),
-      chapters(*)
+      profiles (
+        id,
+        username,
+        display_name,
+        avatar_url
+      )
     `)
-    .eq("user_id", userId)
-    .order("last_read_at", {
+    .eq("chapter_id", chapterId)
+    .is("parent_id", null)
+    .order("created_at", {
       ascending: false
     });
 
@@ -112,21 +56,99 @@ export async function getContinueReading(
 }
 
 // ==========================================
-// GET LAST READ CHAPTER
+// GET COMMENT REPLIES
 // ==========================================
 
-export async function getLastReadChapter(
-  userId,
-  novelId
+export async function getReplies(
+  parentId
 ) {
   const { data, error } = await supabase
-    .from("reading_history")
-    .select("*")
-    .eq("user_id", userId)
-    .eq("novel_id", novelId)
-    .maybeSingle();
+    .from("comments")
+    .select(`
+      *,
+      profiles (
+        id,
+        username,
+        display_name,
+        avatar_url
+      )
+    `)
+    .eq("parent_id", parentId)
+    .order("created_at", {
+      ascending: true
+    });
 
   if (error) throw error;
 
   return data;
+}
+
+// ==========================================
+// DELETE COMMENT
+// ==========================================
+
+export async function deleteComment(
+  commentId
+) {
+  const { error } = await supabase
+    .from("comments")
+    .delete()
+    .eq("id", commentId);
+
+  if (error) throw error;
+}
+
+// ==========================================
+// LIKE COMMENT
+// ==========================================
+
+export async function likeComment(
+  userId,
+  commentId
+) {
+  const { error } = await supabase
+    .from("comment_likes")
+    .insert({
+      user_id: userId,
+      comment_id: commentId
+    });
+
+  if (error) throw error;
+}
+
+// ==========================================
+// UNLIKE COMMENT
+// ==========================================
+
+export async function unlikeComment(
+  userId,
+  commentId
+) {
+  const { error } = await supabase
+    .from("comment_likes")
+    .delete()
+    .eq("user_id", userId)
+    .eq("comment_id", commentId);
+
+  if (error) throw error;
+}
+
+// ==========================================
+// CHECK COMMENT LIKE
+// ==========================================
+
+export async function hasLikedComment(
+  userId,
+  commentId
+) {
+  const { data, error } = await supabase
+    .from("comment_likes")
+    .select("*")
+    .eq("user_id", userId)
+    .eq("comment_id", commentId)
+    .maybeSingle();
+
+  if (error) throw error;
+
+  return !!data;
 }
