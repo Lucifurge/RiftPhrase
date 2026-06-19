@@ -1,14 +1,8 @@
 // src/pages/Home.jsx
 
-import Navbar from "../components/layout/Navbar";
-import Footer from "../components/layout/Footer";
-
 export default function Home() {
   return (
     <div className="min-h-screen bg-white text-slate-900">
-
-      {/* Navbar */}
-      <Navbar />
 
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-b from-white via-blue-50 to-white py-24">
@@ -35,6 +29,7 @@ export default function Home() {
               Become an Author
             </button>
           </div>
+
         </div>
       </section>
 
@@ -53,7 +48,7 @@ export default function Home() {
 
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
 
-          {[1,2,3,4,5,6].map((item) => (
+          {[1, 2, 3, 4, 5, 6].map((item) => (
             <div
               key={item}
               className="bg-white rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden"
@@ -77,6 +72,7 @@ export default function Home() {
           ))}
 
         </div>
+
       </section>
 
       {/* Latest Updates */}
@@ -89,7 +85,7 @@ export default function Home() {
 
           <div className="space-y-4">
 
-            {[1,2,3,4,5].map((item) => (
+            {[1, 2, 3, 4, 5].map((item) => (
               <div
                 key={item}
                 className="bg-white p-5 rounded-xl shadow-sm flex justify-between items-center"
@@ -147,10 +143,12 @@ export default function Home() {
           ))}
 
         </div>
+
       </section>
 
       {/* CTA */}
       <section className="bg-gradient-to-r from-blue-600 to-sky-500 py-20">
+
         <div className="max-w-4xl mx-auto text-center text-white px-6">
 
           <h2 className="text-4xl font-bold mb-4">
@@ -166,10 +164,8 @@ export default function Home() {
           </button>
 
         </div>
-      </section>
 
-      {/* Footer */}
-      <Footer />
+      </section>
 
     </div>
   );
