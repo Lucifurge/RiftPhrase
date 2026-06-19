@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* GLOBAL VOID THEME */
 html,
 body,
 #root {
@@ -9,10 +10,31 @@ body,
   min-height: 100%;
   margin: 0;
   padding: 0;
+  background: #020617; /* VOID BLACK */
+  color: #e2e8f0; /* LIGHT TEXT */
 }
 
+/* Smooth rendering */
 body {
   font-family: Inter, sans-serif;
-  background: #ffffff;
-  color: #0f172a;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Optional: scrollbar styling (gives premium feel) */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2563eb;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #38bdf8;
 }
