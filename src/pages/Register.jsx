@@ -1,5 +1,6 @@
+```jsx
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   FaUser,
   FaEnvelope,
@@ -7,7 +8,11 @@ import {
   FaBookOpen
 } from "react-icons/fa";
 
+import { register } from "../services/authService";
+
 export default function Register() {
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     username: "",
     email: "",
@@ -15,6 +20,9 @@ export default function Register() {
     confirmPassword: "",
     role: "reader"
   });
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     setForm({
@@ -26,14 +34,34 @@ export default function Register() {
   const handleRegister = async (e) => {
     e.preventDefault();
 
+    setError("");
+
     if (form.password !== form.confirmPassword) {
-      alert("Passwords do not match");
+      setError("Passwords do not match");
       return;
     }
 
-    // TODO: Supabase Registration
+    try {
+      setLoading(true);
 
-    console.log(form);
+      await register({
+        email: form.email,
+        password: form.password,
+        username: form.username,
+        role: form.role
+      });
+
+      alert(
+        "Account created successfully! Please check your email to verify your account."
+      );
+
+      navigate("/login");
+
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -60,6 +88,12 @@ export default function Register() {
 
         {/* Card */}
         <div className="bg-white rounded-3xl shadow-xl p-8">
+
+          {error && (
+            <div className="mb-6 p-4 rounded-2xl bg-red-100 text-red-600">
+              {error}
+            </div>
+          )}
 
           <form
             onSubmit={handleRegister}
@@ -194,9 +228,12 @@ export default function Register() {
             {/* Register Button */}
             <button
               type="submit"
-              className="w-full py-4 rounded-2xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
+              disabled={loading}
+              className="w-full py-4 rounded-2xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition disabled:opacity-50"
             >
-              Create Account
+              {loading
+                ? "Creating Account..."
+                : "Create Account"}
             </button>
 
           </form>
@@ -221,3 +258,4 @@ export default function Register() {
     </div>
   );
 }
+```
