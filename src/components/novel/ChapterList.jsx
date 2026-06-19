@@ -1,4 +1,3 @@
-id="4e8gsl"
 import { Link } from "react-router-dom";
 import {
   FaEye,
@@ -95,4 +94,3 @@ export default function ChapterList() {
     </div>
   );
 }
-
